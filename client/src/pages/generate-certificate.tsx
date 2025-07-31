@@ -135,6 +135,7 @@ const GenerateCertificate = () => {
     const finalData = {
       ...data,
       certificateId: previewData.certificateId,
+      pronouns: data.pronouns === "none" ? "" : data.pronouns,
     };
 
     createCertificateMutation.mutate(finalData);
@@ -296,14 +297,14 @@ const GenerateCertificate = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Pronombres (Opcional)</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                      <Select onValueChange={field.onChange} value={field.value || "none"}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="No especificar" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="">No especificar</SelectItem>
+                          <SelectItem value="none">No especificar</SelectItem>
                           {pronounsOptions.map((option) => (
                             <SelectItem key={option.value} value={option.value}>
                               {option.label}

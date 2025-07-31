@@ -70,4 +70,6 @@ export class MemStorage implements IStorage {
   }
 }
 
+// Using memory storage for now due to database authentication issues
+// To enable database storage, the DATABASE_URL password needs to be verified
 export const storage = new MemStorage();

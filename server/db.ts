@@ -1,4 +1,5 @@
-// Database setup will be enabled once the DATABASE_URL SSL configuration is resolved
-// For now, the application uses in-memory storage as configured in storage.ts
+// Database connection disabled due to authentication issues
+// The Supabase DATABASE_URL password needs to be verified
+// For now, the app uses in-memory storage which works perfectly for development
 
-export const db = null; // Placeholder until database connection is established
+export const db = null;

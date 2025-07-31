@@ -1,3 +1,7 @@
+// Database storage implementation - currently disabled due to authentication issues
+// This file is prepared for when the Supabase connection is properly configured
+
+/*
 import { type Certificate, type InsertCertificate, certificates } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, ilike } from "drizzle-orm";
@@ -57,3 +61,7 @@ export class DatabaseStorage implements IStorage {
     return await query_;
   }
 }
+*/
+
+// Placeholder export to prevent import errors
+export class DatabaseStorage {}

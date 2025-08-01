@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Tag, Menu, Home, Plus, BarChart3 } from "lucide-react";
+import { Tag, Menu, Home, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Navigation = () => {
@@ -12,7 +12,6 @@ const Navigation = () => {
   const navItems = [
     { path: "/", label: "Inicio", icon: Home },
     { path: "/generar", label: "Generar Certificado", icon: Plus },
-    { path: "/dashboard", label: "Panel de Control", icon: BarChart3 },
   ];
 
   const NavLink = ({ path, label, icon: Icon, mobile = false }: any) => (

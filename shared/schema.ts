@@ -1,29 +1,23 @@
-import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const certificates = pgTable("certificates", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  studentName: text("student_name").notNull(),
-  courseName: text("course_name").notNull(),
-  commission: text("commission").notNull(),
-  completionDate: text("completion_date").notNull(),
-  discordHandle: text("discord_handle"),
-  personalMessage: text("personal_message"),
-  pronouns: text("pronouns"),
-  certificateId: text("certificate_id").notNull().unique(),
-  fileUrl: text("file_url"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const insertCertificateSchema = createInsertSchema(certificates).omit({
-  id: true,
-  createdAt: true,
+export const insertCertificateSchema = z.object({
+  studentName: z.string().min(1, "El nombre del estudiante es requerido"),
+  courseName: z.string().min(1, "El nombre del curso es requerido"),
+  commission: z.string().min(1, "La comisión es requerida"),
+  completionDate: z.string().min(1, "La fecha de finalización es requerida"),
+  discordHandle: z.string().optional(),
+  personalMessage: z.string().optional(),
+  pronouns: z.string().optional(),
+  certificateId: z.string().optional(),
+  fileUrl: z.string().optional(),
 });
 
 export type InsertCertificate = z.infer<typeof insertCertificateSchema>;
-export type Certificate = typeof certificates.$inferSelect;
 
-// Legacy alias for backwards compatibility
+export type Certificate = InsertCertificate & {
+  id?: string;
+  createdAt?: Date;
+};
+
+// Legacy alias for backwards compatibility  
 export type Tag = Certificate;

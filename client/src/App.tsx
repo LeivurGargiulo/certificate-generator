@@ -6,7 +6,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import GenerateCertificate from "@/pages/generate-certificate";
-import Dashboard from "@/pages/dashboard";
 import Navigation from "@/components/navigation";
 import LoadingModal from "@/components/loading-modal";
 
@@ -15,7 +14,6 @@ function Router() {
     <Switch>
       <Route path="/" component={Landing} />
       <Route path="/generar" component={GenerateCertificate} />
-      <Route path="/dashboard" component={Dashboard} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -4,12 +4,11 @@ import { Link } from "wouter";
 import { 
   Wand2, 
   Cloud, 
-  Search, 
   Smartphone, 
   Download, 
   Settings,
   Plus,
-  BarChart3 
+  FileText
 } from "lucide-react";
 import { courses } from "@/lib/courses";
 
@@ -22,16 +21,10 @@ const Landing = () => {
       color: "bg-blue-100 text-blue-500",
     },
     {
-      icon: Cloud,
-      title: "Almacenamiento en la Nube",
-      description: "Guarda y accede a todos los certificados desde cualquier dispositivo.",
+      icon: FileText,
+      title: "Vista Previa en Tiempo Real",
+      description: "Ve cómo quedará tu certificado antes de descargarlo.",
       color: "bg-emerald-100 text-emerald-500",
-    },
-    {
-      icon: Search,
-      title: "Búsqueda Avanzada",
-      description: "Encuentra certificados rápidamente por estudiante, curso o fecha.",
-      color: "bg-indigo-100 text-indigo-500",
     },
     {
       icon: Smartphone,
@@ -73,12 +66,6 @@ const Landing = () => {
                 Generar Certificado
               </Button>
             </Link>
-            <Link href="/dashboard">
-              <Button variant="outline" size="lg">
-                <Search className="mr-2 h-5 w-5" />
-                Ver Certificados
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
@@ -90,7 +77,7 @@ const Landing = () => {
             Características Principales
           </h2>
           <p className="text-lg text-slate-600">
-            Todo lo que necesitas para gestionar certificados académicos
+           Todo lo que necesitas para generar certificados académicos profesionales
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +22,6 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { insertCertificateSchema } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
 import { courses, commissions, pronounsOptions, getCourseDisplayName } from "@/lib/courses";
 import CertificateTemplate from "@/components/certificate-template";
 import LoadingModal from "@/components/loading-modal";
@@ -45,7 +43,6 @@ const GenerateCertificate = () => {
   const [previewData, setPreviewData] = useState<any>(null);
   const certificateRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -59,30 +56,6 @@ const GenerateCertificate = () => {
       pronouns: "",
       certificateId: "",
       fileUrl: "",
-    },
-  });
-
-  const createCertificateMutation = useMutation({
-    mutationFn: async (data: FormData) => {
-      const response = await apiRequest("POST", "/api/certificates", data);
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/certificates"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/certificates/stats/summary"] });
-      toast({
-        title: "¡Certificado generado exitosamente!",
-        description: "El certificado se ha creado y guardado en el sistema.",
-      });
-      form.reset();
-      setPreviewData(null);
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "No se pudo generar el certificado",
-        variant: "destructive",
-      });
     },
   });
 
@@ -126,19 +99,34 @@ const GenerateCertificate = () => {
     if (!previewData) {
       toast({
         title: "Error",
-        description: "Debe generar una vista previa antes de crear el certificado",
+        description: "Debe generar una vista previa antes de descargar el certificado",
         variant: "destructive",
       });
       return;
     }
 
-    const finalData = {
-      ...data,
-      certificateId: previewData.certificateId,
-      pronouns: data.pronouns === "none" ? "" : data.pronouns,
-    };
-
-    createCertificateMutation.mutate(finalData);
+    // Generate and download the PDF directly
+    try {
+      setIsGenerating(true);
+      if (certificateRef.current) {
+        const blob = await generateCertificatePDF(certificateRef.current);
+        downloadPDF(blob, `certificado-${previewData.studentName.replace(/\s+/g, '-').toLowerCase()}.pdf`);
+        toast({
+          title: "¡Certificado generado exitosamente!",
+          description: "El certificado se ha descargado correctamente.",
+        });
+        form.reset();
+        setPreviewData(null);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo generar el certificado PDF",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -320,10 +308,10 @@ const GenerateCertificate = () => {
                 <Button 
                   type="submit" 
                   className="w-full"
-                  disabled={createCertificateMutation.isPending || !previewData}
+                  disabled={isGenerating || !previewData}
                 >
                   <Tag className="mr-2 h-4 w-4" />
-                  {createCertificateMutation.isPending ? "Generando..." : "Generar Certificado"}
+                  {isGenerating ? "Generando..." : "Generar y Descargar Certificado"}
                 </Button>
               </form>
             </Form>
@@ -372,9 +360,9 @@ const GenerateCertificate = () => {
       </div>
 
       <LoadingModal 
-        isOpen={createCertificateMutation.isPending || isGenerating}
-        title={isGenerating ? "Generando PDF" : "Creando Certificado"}
-        message={isGenerating ? "Generando el archivo PDF..." : "Guardando el certificado en el sistema..."}
+        isOpen={isGenerating}
+        title="Generando Certificado"
+        message="Creando el archivo PDF del certificado..."
       />
     </div>
   );
